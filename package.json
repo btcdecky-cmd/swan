@@ -1,0 +1,15 @@
+{
+  "name": "swan",
+  "version": "0.2.0",
+  "private": true,
+  "type": "module",
+  "description": "Swan — on-chain Solana adoption, advertising, and lending. Integrated with Bags.fm and Helius.",
+  "scripts": {
+    "dev": "vite dev --port 3000",
+    "build": "vite build",
+    "preview": "vite preview --port 8081",
+    "typecheck": "tsc --noEmit",
+    "helius:ping": "tsx scripts/helius-ping.ts",
+    "bags:ping": "tsx scripts/bags-ping.ts"
+  }
+}
