@@ -1,0 +1,76 @@
+:root {
+  --bg: #0b0b0f;
+  --surface: #12121a;
+  --border: #2a2a3a;
+  --text: #e8e8f0;
+  --muted: #9a9aab;
+  --accent: #8b7cf6;
+  font-family: "IBM Plex Sans", system-ui, sans-serif;
+  color: var(--text);
+  background: var(--bg);
+  line-height: 1.5;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: radial-gradient(ellipse at top, #16161f 0%, var(--bg) 55%);
+}
+h1, h2, h3 {
+  font-family: "Instrument Serif", Georgia, serif;
+  font-weight: 400;
+}
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+.app-shell { max-width: 960px; margin: 0 auto; padding: 0 16px 80px; }
+.nav {
+  display: flex; gap: 8px; flex-wrap: wrap; align-items: center;
+  padding: 16px 0; border-bottom: 1px solid var(--border); margin-bottom: 24px;
+}
+.nav a {
+  color: var(--muted); padding: 6px 12px; border-radius: 8px; font-size: 14px;
+}
+.nav a.active, .nav a:hover {
+  color: var(--text); background: var(--surface); text-decoration: none;
+}
+.nav .brand {
+  font-family: "Instrument Serif", Georgia, serif;
+  font-size: 22px; color: var(--text); margin-right: auto;
+}
+.card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 12px; padding: 16px 18px; margin-bottom: 12px;
+}
+.card h3 { margin: 0 0 6px; font-size: 20px; }
+.muted { color: var(--muted); }
+.badge {
+  display: inline-block; font-size: 11px; padding: 2px 8px;
+  border-radius: 999px; background: #1e1e2a; color: var(--muted);
+  margin-right: 6px; text-transform: uppercase; letter-spacing: 0.04em;
+}
+.badge.override { background: #2a1f4d; color: #c4b5fd; }
+.badge.contract { background: #1a2f1a; color: #86efac; }
+.badge.remnant { background: #2a2a1a; color: #fde68a; }
+.btn {
+  display: inline-block; background: var(--accent); color: #0b0b0f;
+  border: none; border-radius: 8px; padding: 10px 16px; font-weight: 600;
+  cursor: pointer; font-size: 14px;
+}
+.btn.ghost {
+  background: transparent; color: var(--text); border: 1px solid var(--border);
+}
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.grid { display: grid; gap: 12px; }
+.grid.cols-2 { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+.hero { padding: 32px 0 24px; }
+.hero h1 { font-size: 42px; margin: 0 0 12px; line-height: 1.15; }
+.mobile-nav {
+  display: none; position: fixed; bottom: 0; left: 0; right: 0;
+  background: var(--surface); border-top: 1px solid var(--border);
+  padding: 10px; justify-content: space-around;
+}
+@media (max-width: 720px) {
+  .mobile-nav { display: flex; }
+  .nav { display: none; }
+  .app-shell { padding-bottom: 72px; }
+}
