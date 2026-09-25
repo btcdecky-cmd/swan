@@ -3,13 +3,41 @@
   "version": "0.2.0",
   "private": true,
   "type": "module",
-  "description": "Swan — on-chain Solana adoption, advertising, and lending. Integrated with Bags.fm and Helius.",
+  "description": "Swan — on-chain Solana adoption, advertising, and lending.",
   "scripts": {
     "dev": "vite dev --port 3000",
     "build": "vite build",
     "preview": "vite preview --port 8081",
     "typecheck": "tsc --noEmit",
+    "bags:ping": "tsx scripts/bags-ping.ts",
     "helius:ping": "tsx scripts/helius-ping.ts",
-    "bags:ping": "tsx scripts/bags-ping.ts"
+    "deploy:escrow": "bash scripts/deploy-escrow.sh"
+  },
+  "dependencies": {
+    "@solana/wallet-adapter-base": "^0.9.23",
+    "@solana/wallet-adapter-react": "^0.15.35",
+    "@solana/wallet-adapter-react-ui": "^0.9.35",
+    "@solana/wallet-adapter-wallets": "^0.19.32",
+    "@solana/web3.js": "^1.98.0",
+    "@supabase/supabase-js": "^2.49.0",
+    "bs58": "^6.0.0",
+    "drizzle-orm": "^0.39.0",
+    "helius-sdk": "^2.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-router-dom": "^7.1.0",
+    "zod": "^3.24.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@vitejs/plugin-react": "^4.3.0",
+    "drizzle-kit": "^0.30.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.0",
+    "vite": "^6.0.0"
+  },
+  "engines": {
+    "node": ">=20"
   }
 }

@@ -1,65 +1,85 @@
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useWallet, useConnection } from "@solana/wallet-adapter-react";
+import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
+import { useEffect, useState } from "react";
 import { supabaseConfigured } from "../lib/supabase";
-import {
-  getOrCreateWallet,
-  setWalletLinked,
-  getProfile,
-  listActivity,
-} from "../lib/session";
+import { getProfile, listActivity, getOrCreateWallet } from "../lib/session";
+import { getClusterLabel, getRpcEndpoint } from "../lib/solana/connection";
+import { getProtocolMode, getProgramId } from "../lib/protocol/escrow-client";
+import { isPlaceholderProgram } from "../lib/protocol/rpc-escrow";
 
 export function WalletPage() {
-  const [wallet, setWallet] = useState(getOrCreateWallet());
+  const { publicKey, connected } = useWallet();
+  const { connection } = useConnection();
+  const [balance, setBalance] = useState<number | null>(null);
   const profile = getProfile();
   const activity = listActivity();
+  const demo = getOrCreateWallet();
+  const mode = getProtocolMode();
 
-  function connect() {
-    setWalletLinked(true);
-    setWallet(getOrCreateWallet());
-  }
+  useEffect(() => {
+    if (!publicKey) {
+      setBalance(null);
+      return;
+    }
+    connection
+      .getBalance(publicKey)
+      .then((lamports) => setBalance(lamports / 1e9))
+      .catch(() => setBalance(null));
+  }, [publicKey, connection]);
 
   return (
     <div>
       <h1 style={{ fontSize: 28 }}>Wallet</h1>
       <p className="muted" style={{ maxWidth: 560 }}>
-        Protocol wallet for rewards and activity. Auth:{" "}
-        {supabaseConfigured ? "Supabase configured" : "demo mode"}. On-chain via{" "}
-        <Link to="/helius">Helius</Link>.
+        Real wallet adapter. Cluster <strong>{getClusterLabel()}</strong> · mode{" "}
+        <code>{mode}</code>.
       </p>
       <div className="card" style={{ marginTop: 16 }}>
-        <h3>Address</h3>
-        <p style={{ fontFamily: "ui-monospace, monospace", fontSize: 13, wordBreak: "break-all" }}>
-          {wallet.address}
-        </p>
+        <h3>Connect</h3>
+        <WalletMultiButton />
+        {connected && publicKey && (
+          <>
+            <p style={{ fontFamily: "ui-monospace, monospace", fontSize: 13, wordBreak: "break-all", marginTop: 12 }}>
+              {publicKey.toBase58()}
+            </p>
+            <p className="muted">
+              Balance: {balance == null ? "…" : `${balance.toFixed(4)} SOL`}
+            </p>
+          </>
+        )}
+        {!connected && (
+          <p className="muted" style={{ marginTop: 12 }}>
+            Demo fallback: {demo.address.slice(0, 12)}…
+          </p>
+        )}
+      </div>
+      <div className="card">
+        <h3>Protocol</h3>
         <p className="muted">
-          Linked: {wallet.linked ? "yes" : "no"} · earned{" "}
-          {(profile.totalEarnedLamports / 1e9).toFixed(4)} SOL (session)
+          Mode <code>{mode}</code> · program <code>{getProgramId().slice(0, 16)}…</code>
         </p>
-        <button className="btn" type="button" onClick={connect} style={{ marginTop: 8 }}>
-          {wallet.linked ? "Reconnect (demo)" : "Connect wallet (demo)"}
-        </button>
+        <p className="muted">RPC: {getRpcEndpoint().slice(0, 48)}…</p>
+        {isPlaceholderProgram() && (
+          <p className="muted">
+            Deploy with <code>npm run deploy:escrow</code>, set VITE_SWAN_PROGRAM_ID and
+            VITE_SWAN_PROTOCOL_MODE=rpc.
+          </p>
+        )}
       </div>
       <div className="card">
         <h3>Profile</h3>
         <p><strong>{profile.displayName}</strong></p>
         <p className="muted">
-          Journey step {profile.journeyStep}/6 · lending{" "}
-          {profile.hasReceivedPayout ? "unlocked" : "locked"}
+          Journey {profile.journeyStep}/6 · earned{" "}
+          {(profile.totalEarnedLamports / 1e9).toFixed(4)} SOL
         </p>
-        <Link to="/journey">Open journey →</Link>
       </div>
       <div className="card">
         <h3>Activity</h3>
-        {activity.length === 0 && (
-          <p className="muted">No activity yet — claim a campaign reward.</p>
-        )}
-        <ul style={{ paddingLeft: 18, margin: 0 }}>
-          {activity.slice(0, 15).map((a) => (
-            <li key={a.id} className="muted" style={{ marginBottom: 6 }}>
-              <code>{a.type}</code> · {a.label}
-              <br />
-              <span style={{ fontSize: 11 }}>{new Date(a.at).toLocaleString()}</span>
-            </li>
+        <ul style={{ paddingLeft: 18 }}>
+          {activity.slice(0, 12).map((a) => (
+            <li key={a.id} className="muted">{a.label}</li>
           ))}
         </ul>
       </div>
