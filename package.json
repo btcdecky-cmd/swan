@@ -1,6 +1,6 @@
 {
   "name": "swan",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "private": true,
   "type": "module",
   "description": "Swan — on-chain Solana adoption, advertising, and lending.",
@@ -11,7 +11,8 @@
     "typecheck": "tsc --noEmit",
     "bags:ping": "tsx scripts/bags-ping.ts",
     "helius:ping": "tsx scripts/helius-ping.ts",
-    "deploy:escrow": "bash scripts/deploy-escrow.sh"
+    "deploy:escrow": "bash scripts/deploy-escrow.sh",
+    "setup:solana": "bash scripts/setup-solana.sh"
   },
   "dependencies": {
     "@solana/wallet-adapter-base": "^0.9.23",
